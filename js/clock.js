@@ -1,6 +1,8 @@
 var clock = (() => {
     function Clock(container) {
+        Clock.prototype.dateObject = new Date();
         Clock.prototype.templateHtml(container);
+        Clock.prototype.startAutoUpdateClock();
     }
     Clock.prototype = {
         DOM: {
@@ -8,18 +10,18 @@ var clock = (() => {
             getMin: () => document.querySelector(".clock__numbers .minutes"),
             getSec: () => document.querySelector(".clock__numbers .seconds")
         },
+        dateObject: null,
         date: {
-            object: () => new Date(),
             getHr: () => {
-                let hr = Clock.prototype.date.object().getHours();
+                let hr = Clock.prototype.dateObject.getHours();
                 return Clock.prototype.addZeroBefore(hr) + hr;
             },
             getMin: () => {
-                let min = Clock.prototype.date.object().getMinutes();
+                let min = Clock.prototype.dateObject.getMinutes();
                 return Clock.prototype.addZeroBefore(min) + min;
             },
             getSec: () => {
-                let sec = Clock.prototype.date.object().getSeconds();
+                let sec = Clock.prototype.dateObject.getSeconds();
                 return Clock.prototype.addZeroBefore(sec) + sec;
             }
         },
@@ -50,7 +52,10 @@ var clock = (() => {
         },
         clockInterval: null,
         startAutoUpdateClock: () => {
-            Clock.prototype.clockInterval = setInterval(Clock.prototype.updateClock, 1000);
+            Clock.prototype.clockInterval = setInterval(() => {
+                Clock.prototype.dateObject = new Date();
+                Clock.prototype.updateClock();
+            }, 1000);
         },
         stopAutoUpdateClock: () => clearInterval(Clock.prototype.clockInterval)
     }
@@ -58,7 +63,6 @@ var clock = (() => {
     return {
         init: () => {
             let clock = new Clock("main");
-            clock.startAutoUpdateClock();
         }
     }
 })();
